@@ -10,11 +10,18 @@ module testbench();
   reg RX = 1;
   wire TX;
 
-  uart #(.BAUDSEL(10 /*PERIOD/2*/)) uut (
+  reg tx_valid=0;
+  wire tx_ready;
+  reg [7:0] tx_data;
+
+  uart #(.BAUDSEL(PERIOD/2)) uut (
     .clk (clk ),
     .rx  (RX  ),
     .tx  (TX  ),
-    .rx_ready(1)
+    .rx_ready(1'b1),
+    .tx_valid(tx_valid),
+    .tx_ready(tx_ready),
+    .tx_data(tx_data)
   );
 
   task send_byte;
@@ -58,7 +65,14 @@ module testbench();
     send_byte("4");
     send_byte("5");
 
-    repeat (10 * PERIOD) @(posedge clk);
+    #5
+    tx_data = 8'h42;
+    tx_valid = 1;
+    #10
+    tx_valid = 0;
+    #300;
+
+    repeat (100 * PERIOD) @(posedge clk);
 
     $finish;
   end

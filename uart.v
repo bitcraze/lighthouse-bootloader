@@ -31,15 +31,7 @@ module uart #(
   reg [7:0] rx_buffer;
   
   // Baudrate counter
-  reg integer rx_counter;
-  // always @(posedge clk) begin
-  //   if (rx_state == RX_IDLE) rx_counter <= 0;
-  //   else begin
-  //     if (rx_counter == BAUDSEL) rx_counter <= 0;
-  //     else rx_counter <= rx_counter + 1;
-  //   end
-  // end
-
+  reg [$clog2(3*BAUDSEL):0] rx_counter;
 
   // RX state machine
   always @(posedge clk) begin
@@ -84,7 +76,7 @@ module uart #(
 
   initial rx_valid = 0;
 
-  // module interface managements
+  // module interface management
   reg [2:0] rx_prevState;
   always @(posedge clk) begin
     if (rx_prevState == RX_STOP && rx_state == RX_IDLE) begin
@@ -94,7 +86,7 @@ module uart #(
     end
 
     if (rx_prevState == RX_BREAK && rx_state == RX_IDLE) begin
-      // We had a break event
+      // Transition from break to idle: we had a break condition
       rx_break <= 1;
     end else rx_break <= 0;
 
@@ -105,9 +97,38 @@ module uart #(
     rx_prevState <= rx_state;
   end
 
-
-  // Break detection
-
   // Transmitter implementation
+  reg [7:0] tx_buffer;
+  localparam TX_IDLE = 0;
+  localparam TX_START = 1;
+  localparam TX_DATA = 2;
+  localparam TX_STOP = 3;
+  reg [1:0] tx_state = TX_IDLE;
+  reg [$clog2(3*BAUDSEL):0] tx_counter;
+  reg [2:0] tx_bitcount;
+
+  always @(posedge clk) begin
+    tx_ready <= 0;
+    if (tx_state == TX_IDLE) begin
+      tx_ready <= 1;
+      if (tx_valid) begin
+        tx_state <= TX_START;
+        tx_counter <= 0;
+        tx_bitcount <= 0;
+        tx_buffer <= tx_data;
+      end
+    end else if (tx_counter == 2*BAUDSEL) begin
+      tx_counter <= 0;
+      if (tx_state == TX_START) tx_state <= TX_DATA;
+      else if (tx_state == TX_DATA) begin
+        tx_bitcount <= tx_bitcount + 1;
+        tx_buffer <= {1'b0, tx_buffer[7:1]};
+
+        if (tx_bitcount == 7) tx_state <= TX_STOP;
+      end else if (tx_state == TX_STOP) tx_state <= TX_IDLE;
+    end else tx_counter <= tx_counter + 1;
+  end
+
+  assign tx = (tx_state == TX_START)?0:(tx_state == TX_DATA)?tx_buffer[0]:1;
 
 endmodule

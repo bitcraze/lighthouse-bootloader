@@ -1,26 +1,29 @@
 #!/usr/bin/env python3
 
 from serial import Serial
+from binascii import hexlify
 
-fpga = Serial("/dev/ttyUSB1", 9600)
+fpga = Serial("/dev/ttyUSB1", 115200)
 
+print ("Reseting bootloader ...")
 fpga.send_break()
-tosend = b"\x03\0\0\0" + b"\0"*16
+fpga.send_break()
+
+fpga.write(b"\x01\x01\x00\x0F\x00\x9F")
+print("Chip ID:", hexlify(fpga.read(15)))
+
+tosend = b"\x01\x04\x00\x00\x10\x03\x00\x00\x00"
 fpga.write(tosend)
-received = fpga.read(len(tosend))
-fpga.send_break()
+received = fpga.read(0x1000)
 
-data = received[-16:]
-
-for b in received:
-    print(hex(b))
+data = received
 
 with open("bootloader.bin", "rb") as f:
-    verif = f.read(16)
+    verif = f.read(0x1000)
     if verif == data:
-        print("First 16 bytes verified succesfully!")
+        print("First {} bytes verified succesfully!".format(0x1000))
     else:
-        print("Verification of the first 16 bytes failed!")
+        print("Verification of the first 256 bytes failed!")
         print(data)
         print("VS")
         print(verif)

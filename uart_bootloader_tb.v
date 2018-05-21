@@ -9,7 +9,10 @@ module testbench;
 
   reg RX = 1;
 
-  uart_bootloader uut(
+  uart_bootloader #(
+    .CLK_FREQ(12000000),
+    .UART_BAUDRATE(9600)  
+  ) uut(
     .clk(clk),
     .uart_rx(RX),
     .spi_si(1'b0)
@@ -52,6 +55,40 @@ module testbench;
     send_byte(8'h00);
 
     repeat (100 * PERIOD) @(posedge clk);
+
+    // Aborted transferts then transfers
+    send_byte(8'h01);
+    send_byte(8'h02);
+    send_byte(8'h00);
+    // Break
+    RX = 0;
+    repeat (19 * PERIOD) @(posedge clk);
+    RX = 1;
+    repeat (PERIOD) @(posedge clk);
+
+    send_byte(8'h01);
+    send_byte(8'h02);
+    send_byte(8'h00);
+    send_byte(8'h05);
+    send_byte(8'h00);
+    send_byte(8'h9F);
+    send_byte(8'h00);
+
+    // repeat (100 * PERIOD) @(posedge clk);
+
+    // // 1 byte out 0 byte in transfer
+    // send_byte(8'h01);
+    // send_byte(8'h01);
+    // send_byte(8'h00);
+    // send_byte(8'h00);
+    // send_byte(8'h00);
+    // send_byte(8'hAB);
+
+    repeat (100 * PERIOD) @(posedge clk);
+
+    // Boot!
+    send_byte(8'h00);
+
 
     $finish;
   end

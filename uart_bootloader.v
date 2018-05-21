@@ -4,7 +4,7 @@
 module uart_bootloader #(
   parameter CLK_FREQ = 12000000,
   parameter UART_BAUDRATE = 115200,
-  parameter SPI_FREQ = 120000
+  parameter SPI_FREQ = 4000000
 ) (
   input clk,
 
@@ -16,7 +16,9 @@ module uart_bootloader #(
   output spi_sck,
   output reg spi_ss,
 
-  output led
+  output led,
+
+  output boot
 );
 
   // communication ports
@@ -167,5 +169,8 @@ module uart_bootloader #(
 
   // status
   assign led = state != STATE_CMD;
+
+  // Boot signal
+  assign boot = state == STATE_BOOT;
 
 endmodule

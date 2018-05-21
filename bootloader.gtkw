@@ -1,31 +1,28 @@
 [*]
 [*] GTKWave Analyzer v3.3.66 (w)1999-2015 BSI
-[*] Fri May 18 03:55:00 2018
+[*] Mon May 21 01:22:07 2018
 [*]
-[dumpfile] "/home/arnaud/dev/fpga/bootloader/bootloader_tb.vcd"
-[dumpfile_mtime] "Fri May 18 03:53:14 2018"
-[dumpfile_size] 9959907
+[dumpfile] "/home/arnaud/dev/fpga/bootloader/uart_bootloader_tb.vcd"
+[dumpfile_mtime] "Mon May 21 01:21:24 2018"
+[dumpfile_size] 18572217
 [savefile] "/home/arnaud/dev/fpga/bootloader/bootloader.gtkw"
 [timestart] 0
 [size] 1859 1050
 [pos] -1 -1
-*-18.676483 2256000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+*-19.608797 5125000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] testbench.
 [treeopen] testbench.uut.
 [sst_width] 258
-[signals_width] 160
+[signals_width] 281
 [sst_expanded] 1
-[sst_vpaned_height] 303
+[sst_vpaned_height] 610
 @28
 testbench.clk
 testbench.RX
-testbench.TX
 testbench.uut.spi_sck
 testbench.uut.spi_si
 testbench.uut.spi_so
-@29
 testbench.uut.spi_ss
-@28
 testbench.uut.uart_rx_valid
 @200
 -
@@ -40,5 +37,7 @@ testbench.uut.spi.rx_valid
 testbench.uut.spi.rx_data[7:0]
 @28
 testbench.uut.spi.rx_ready
+@29
+testbench.uut.boot
 [pattern_trace] 1
 [pattern_trace] 0

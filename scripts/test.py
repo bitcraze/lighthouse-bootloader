@@ -6,8 +6,14 @@ from binascii import hexlify
 fpga = Serial("/dev/ttyUSB1", 115200)
 
 print ("Reseting bootloader ...")
+fpga.flushOutput()
 fpga.send_break()
-fpga.send_break()
+fpga.flushInput()
+
+# Todo: Fix bug that prevents from sending command without answer
+print("Resume from power down ...")
+fpga.write(b"\x01\x01\x00\x01\x00\xAB")
+fpga.read(1)
 
 fpga.write(b"\x01\x01\x00\x0F\x00\x9F")
 print("Chip ID:", hexlify(fpga.read(15)))
@@ -27,4 +33,8 @@ with open("bootloader.bin", "rb") as f:
         print(data)
         print("VS")
         print(verif)
+
+print("Booting!")
+fpga.write(b"\x00")
+fpga.flush()
 

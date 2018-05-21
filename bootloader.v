@@ -12,6 +12,8 @@ module top(
     output spi_ss
 );
 
+  wire boot;
+
   uart_bootloader bootloader (
     .clk(clk),
     
@@ -23,7 +25,16 @@ module top(
     .spi_si(spi_si),
     .spi_ss(spi_ss),
 
-    .led(led)
+    .led(led),
+
+    .boot(boot)
   );
+
+  SB_WARMBOOT WB (
+    .BOOT(boot),
+    .S1(1'b 0),
+    .S0(1'b 1)
+  );
+
 
 endmodule

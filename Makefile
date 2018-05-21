@@ -2,7 +2,7 @@ BOARD=icestick
 PIN_DEF=$(BOARD).pcf
 DEVICE=hx1k
 
-all: bootloader.bin bootloader.rpt bootloader.asc
+all: bootloader_multi.bin bootloader.bin bootloader.rpt bootloader.asc
 
 %.blif: %.v
 	yosys -p 'synth_ice40 -top top -blif $@' $<
@@ -12,6 +12,11 @@ all: bootloader.bin bootloader.rpt bootloader.asc
 
 %.bin: %.asc
 	icepack $< $@
+
+%_multi.bin: %.bin
+	cp $^ $^.0
+	cp $^ $^.1
+	icemulti -vv -a 17 -o $@ $^.0 $^.1
 
 %.rpt: %.asc
 	icetime -d $(DEVICE) -mtr $@ $<
@@ -31,8 +36,8 @@ all: bootloader.bin bootloader.rpt bootloader.asc
 %_syntb.vcd: %_syntb
 	vvp -N $< +vcd=$@
 
-prog: bootloader.bin
+prog: bootloader_multi.bin
 	iceprog $<
 
 clean:
-	rm -f bootloader.blif bootloader.asc bootloader.bin bootloader.rpt
+	rm -f bootloader.blif bootloader.asc bootloader.bin bootloader.rpt bootloader_multi.bin

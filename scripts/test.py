@@ -24,7 +24,7 @@ received = fpga.read(0x1000)
 
 data = received
 
-with open("bootloader.bin", "rb") as f:
+with open("bootloader_multi.bin", "rb") as f:
     verif = f.read(0x1000)
     if verif == data:
         print("First {} bytes verified succesfully!".format(0x1000))

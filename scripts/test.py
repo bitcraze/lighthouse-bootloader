@@ -12,11 +12,14 @@ fpga.flushInput()
 
 # Todo: Fix bug that prevents from sending command without answer
 print("Resume from power down ...")
-fpga.write(b"\x01\x01\x00\x01\x00\xAB")
-fpga.read(1)
+fpga.write(b"\x01\x01\x00\x00\x00\xAB")
 
 fpga.write(b"\x01\x01\x00\x0F\x00\x9F")
 print("Chip ID:", hexlify(fpga.read(15)))
+
+# print("Write enable and erase first sector")
+# fpga.write(b"\x01\x01\x00\x00\x00\x06")
+# fpga.write(b"\x01\x04\x00\x00\x00\xD8\x00\x00\x00")
 
 tosend = b"\x01\x04\x00\x00\x10\x03\x00\x00\x00"
 fpga.write(tosend)

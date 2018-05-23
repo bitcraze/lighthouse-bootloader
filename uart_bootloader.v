@@ -129,7 +129,9 @@ module uart_bootloader #(
         STATE_RXLENHIGH: begin
           if (uart_rx_valid == 1) begin
             rxLen[15:8] <= uart_rx_data;
-            state <= STATE_TX;
+            if (txLen != 0) state <= STATE_TX;
+            else if (rxLen != 0) state <= STATE_RX;
+            else state <= STATE_CMD;
             currentLen <= 0;
           end
         end
@@ -138,7 +140,8 @@ module uart_bootloader #(
           if (spi_rx_valid) begin
             currentLen <= currentLen + 1;
             if (currentLen == txLen-1) begin
-              state <= STATE_RX;
+              if (rxLen != 0) state <= STATE_RX;
+              else state <= STATE_CMD;
               currentLen <= 0;
             end
           end

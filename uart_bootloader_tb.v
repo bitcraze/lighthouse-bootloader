@@ -74,20 +74,41 @@ module testbench;
     send_byte(8'h9F);
     send_byte(8'h00);
 
-    // repeat (100 * PERIOD) @(posedge clk);
+    repeat (100 * PERIOD) @(posedge clk);
 
-    // // 1 byte out 0 byte in transfer
-    // send_byte(8'h01);
-    // send_byte(8'h01);
-    // send_byte(8'h00);
-    // send_byte(8'h00);
-    // send_byte(8'h00);
-    // send_byte(8'hAB);
+    // 1 byte out 0 byte in transfer dirrectly followed by another transfer
+    send_byte(8'h01);
+    send_byte(8'h01);
+    send_byte(8'h00);
+    send_byte(8'h00);
+    send_byte(8'h00);
+    send_byte(8'h06);
+
+    send_byte(8'h01);
+    send_byte(8'h04);
+    send_byte(8'h00);
+    send_byte(8'h00);
+    send_byte(8'h00);
+    send_byte(8'hD8);
+    send_byte(8'h02);
+    send_byte(8'h00);
+    send_byte(8'h00);
+
+    repeat (100 * PERIOD) @(posedge clk);
+
+    // Receive and do not send
+    send_byte(8'h01);
+    send_byte(8'h00);
+    send_byte(8'h00);
+    send_byte(8'h01);
+    send_byte(8'h00);
 
     repeat (100 * PERIOD) @(posedge clk);
 
     // Boot!
     send_byte(8'h00);
+
+    repeat (10 * PERIOD) @(posedge clk);
 
 
     $finish;

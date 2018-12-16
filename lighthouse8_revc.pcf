@@ -1,0 +1,15 @@
+set_io clk 35
+
+# UART
+set_io uart_rx 19
+set_io uart_tx 18
+
+# SPI
+set_io spi_sck 15
+set_io spi_si 17
+set_io spi_so 14
+set_io spi_ss 16
+
+# Btn is towards USB
+# set_io btn 87
+# set_io led 95

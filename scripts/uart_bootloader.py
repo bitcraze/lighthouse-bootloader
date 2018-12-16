@@ -25,9 +25,23 @@ def spi_xfer(command, answer_size = 0):
     return fpga.read(answer_size)
 
 def flash_read(address, length):
-    address_bin = struct.pack(">L", address)[-3:]
-    command = b"\x03" + address_bin
-    return spi_xfer(command, length)
+    data = b""
+
+    while length > 0:
+        address_bin = struct.pack(">L", address)[-3:]
+        command = b"\x03" + address_bin
+
+        if length >= 64*1024:
+            length_to_read = (64*1024) - 1
+            length -= length_to_read
+            address += length_to_read
+        else:
+            length_to_read = length
+            length = 0
+        
+        data += spi_xfer(command, length_to_read)
+    
+    return data
 
 def flash_erase_sector(address):
     # Write enable
@@ -85,9 +99,11 @@ if __name__ == "__main__":
     else:
         print("Different bitstream, flashing the new one ...")
 
-        print("Erasing 64K at 0x{:08X}".format(OFFSET))
-        flash_erase_sector(OFFSET)
-        flash_wait_program_complete()
+        npages = int((len(bitstream) / (64*1024))+1)
+        for page in range(npages):
+            print("Erasing 64K at 0x{:08X}".format(OFFSET+(page*64*1024)))
+            flash_erase_sector(OFFSET+(page*64*1024))
+            flash_wait_program_complete()
         
         print("Programming ...")
         toprogram = bitstream

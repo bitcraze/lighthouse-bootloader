@@ -4,7 +4,10 @@ module top(
     input clk,
     input uart_rx,
     output uart_tx,
+
+`ifdef HAS_LED
     output reg led,
+`endif
 
     output spi_sck,
     output spi_so,
@@ -25,7 +28,9 @@ module top(
     .spi_si(spi_si),
     .spi_ss(spi_ss),
 
+`ifdef HAS_LED
     .led(led),
+`endif
 
     .boot(boot)
   );

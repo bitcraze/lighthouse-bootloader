@@ -15,7 +15,6 @@ module uart_bootloader #(
   output spi_so,
   output spi_sck,
   output reg spi_ss,
-
   output led,
 
   output boot

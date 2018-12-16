@@ -1,8 +1,4 @@
-# BOARD=icestick
-# PIN_DEF=$(BOARD).pcf
-# DEVICE=hx1k
-
-BOARD=lighthouse8_revc
+BOARD=lighthouse4_revd
 PIN_DEF=$(BOARD).pcf
 DEVICE=up5k
 
@@ -26,7 +22,7 @@ all: bootloader_multi.bin bootloader.bin bootloader.rpt bootloader.asc
 	icetime -d $(DEVICE) -mtr $@ $<
 
 %_tb: %_tb.v %.v
-	iverilog -o $@ $^
+	iverilog -o $@ $^ `yosys-config --datdir/ice40/cells_sim.v`
 
 %_tb.vcd: %_tb
 	vvp $< +vcd=$@

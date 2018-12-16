@@ -1,5 +1,5 @@
 module testbench;
-  localparam integer PERIOD = 12000000 / 9600;
+  localparam integer PERIOD = 12000000 / 115200;
 
   // reg clk = 0;
   // initial #10 forever #5 clk = ~clk;
@@ -11,10 +11,10 @@ module testbench;
 
   top #(
     .CLK_FREQ(12000000),
-    .UART_BAUDRATE(9600)  
+    .UART_BAUDRATE(115200)  
   ) uut(
     .clk(clk),
-    .uart_rx(RX),
+    .uart0_rx(RX),
     .spi_si(1'b0)
   );
 

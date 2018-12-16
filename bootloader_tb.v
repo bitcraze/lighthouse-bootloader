@@ -1,4 +1,4 @@
-module testbench();
+module testbench;
   localparam integer PERIOD = 12000000 / 9600;
 
   // reg clk = 0;
@@ -8,17 +8,13 @@ module testbench();
   always #5 clk = (clk === 1'b0);
 
   reg RX = 1;
-  wire TX;
 
-  reg tx_valid=0;
-  wire tx_ready;
-  reg [7:0] tx_data;
-
-  top uut (
-    .clk (clk ),
-    .uart_rx  (RX  ),
-    .uart_tx  (TX  ),
-
+  top #(
+    .CLK_FREQ(12000000),
+    .UART_BAUDRATE(9600)  
+  ) uut(
+    .clk(clk),
+    .uart_rx(RX),
     .spi_si(1'b0)
   );
 
@@ -49,28 +45,71 @@ module testbench();
 
     repeat (10 * PERIOD) @(posedge clk);
 
-    // turn all LEDs on
+    // Transfers of 1 tx and 5 rx
     send_byte(8'h01);
-    send_byte("2");
-    send_byte("3");
-    send_byte("4");
-    send_byte("5");
-
-    // turn all LEDs off
-    send_byte("1");
-    send_byte("2");
-    send_byte("3");
-    send_byte("4");
-    send_byte("5");
-
-    #5
-    tx_data = 8'h42;
-    tx_valid = 1;
-    #10
-    tx_valid = 0;
-    #300;
+    send_byte(8'h02);
+    send_byte(8'h00);
+    send_byte(8'h05);
+    send_byte(8'h00);
+    send_byte(8'h9F);
+    send_byte(8'h00);
 
     repeat (100 * PERIOD) @(posedge clk);
+
+    // Aborted transferts then transfers
+    send_byte(8'h01);
+    send_byte(8'h02);
+    send_byte(8'h00);
+    // Break
+    RX = 0;
+    repeat (19 * PERIOD) @(posedge clk);
+    RX = 1;
+    repeat (PERIOD) @(posedge clk);
+
+    send_byte(8'h01);
+    send_byte(8'h02);
+    send_byte(8'h00);
+    send_byte(8'h05);
+    send_byte(8'h00);
+    send_byte(8'h9F);
+    send_byte(8'h00);
+
+    repeat (100 * PERIOD) @(posedge clk);
+
+    // 1 byte out 0 byte in transfer dirrectly followed by another transfer
+    send_byte(8'h01);
+    send_byte(8'h01);
+    send_byte(8'h00);
+    send_byte(8'h00);
+    send_byte(8'h00);
+    send_byte(8'h06);
+
+    send_byte(8'h01);
+    send_byte(8'h04);
+    send_byte(8'h00);
+    send_byte(8'h00);
+    send_byte(8'h00);
+    send_byte(8'hD8);
+    send_byte(8'h02);
+    send_byte(8'h00);
+    send_byte(8'h00);
+
+    repeat (100 * PERIOD) @(posedge clk);
+
+    // Receive and do not send
+    send_byte(8'h01);
+    send_byte(8'h00);
+    send_byte(8'h00);
+    send_byte(8'h01);
+    send_byte(8'h00);
+
+    repeat (100 * PERIOD) @(posedge clk);
+
+    // Boot!
+    send_byte(8'h00);
+
+    repeat (10 * PERIOD) @(posedge clk);
+
 
     $finish;
   end

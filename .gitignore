@@ -5,3 +5,4 @@
 *.blif
 *.rpt
 .vscode/
+*.vcd

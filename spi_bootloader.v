@@ -1,15 +1,21 @@
-`include "uart.v"
 `include "spi.v"
 
-module uart_bootloader #(
+module spi_bootloader #(
   parameter CLK_FREQ = 12000000,
-  parameter UART_BAUDRATE = 115200,
   parameter SPI_FREQ = 4000000
 ) (
   input clk,
 
-  input uart_rx,
-  output uart_tx,
+  input reset,
+
+  input data_in_valid,
+  input [7:0] data_in,
+  output data_in_ready,
+
+  output data_out_valid,
+  output [7:0] data_out,
+  input data_out_ready,
+
 
   input spi_si,
   output spi_so,
@@ -21,35 +27,6 @@ module uart_bootloader #(
 );
 
   // communication ports
-  wire uart_rx_valid;
-  wire [7:0] uart_rx_data;
-  wire uart_rx_ready;
-
-  wire uart_tx_valid;
-  wire [7:0] uart_tx_data;
-  wire uart_tx_ready;
-
-  wire uart_rx_break;
-
-  uart #(
-    .BAUDSEL(CLK_FREQ / (2*UART_BAUDRATE))
-  ) uart (
-    .clk(clk),
-
-    .rx(uart_rx),
-    .tx(uart_tx),
-
-    .rx_valid(uart_rx_valid),
-    .rx_data(uart_rx_data),
-    .rx_ready(uart_rx_ready),
-
-    .rx_break(uart_rx_break),
-
-    .tx_valid(uart_tx_valid),
-    .tx_data(uart_tx_data),
-    .tx_ready(uart_tx_ready)
-  );
-
   wire spi_rx_valid;
   wire [7:0] spi_rx_data;
   wire spi_rx_ready;
@@ -95,39 +72,39 @@ module uart_bootloader #(
   always @(posedge clk) begin
     spi_ss <= 1;
     // UART break condition is used as a state machine reset
-    if (uart_rx_break) begin
+    if (reset) begin
       state <= STATE_CMD;
     end else begin
       case (state)
         STATE_CMD: begin
-          if (uart_rx_valid == 1) begin
-            case (uart_rx_data)
+          if (data_in_valid == 1) begin
+            case (data_in)
               0: state <= STATE_BOOT;
               1: state <= STATE_TXLENLOW;
             endcase 
           end
         end
         STATE_TXLENLOW: begin
-          if (uart_rx_valid == 1) begin
-            txLen[7:0] <= uart_rx_data;
+          if (data_in_valid == 1) begin
+            txLen[7:0] <= data_in;
             state <= STATE_TXLENHIGH;
           end
         end
         STATE_TXLENHIGH: begin
-          if (uart_rx_valid == 1) begin
-            txLen[15:8] <= uart_rx_data;
+          if (data_in_valid == 1) begin
+            txLen[15:8] <= data_in;
             state <= STATE_RXLENLOW;
           end
         end
         STATE_RXLENLOW: begin
-          if (uart_rx_valid == 1) begin
-            rxLen[7:0] <= uart_rx_data;
+          if (data_in_valid == 1) begin
+            rxLen[7:0] <= data_in;
             state <= STATE_RXLENHIGH;
           end
         end
         STATE_RXLENHIGH: begin
-          if (uart_rx_valid == 1) begin
-            rxLen[15:8] <= uart_rx_data;
+          if (data_in_valid == 1) begin
+            rxLen[15:8] <= data_in;
             if (txLen != 0) state <= STATE_TX;
             else if (rxLen != 0) state <= STATE_RX;
             else state <= STATE_CMD;
@@ -147,7 +124,7 @@ module uart_bootloader #(
         end
         STATE_RX: begin
           spi_ss <= 0;
-          if (uart_tx_ready && uart_tx_valid) begin
+          if (data_out_ready && data_out_valid) begin
             currentLen <= currentLen + 1;
             if (currentLen == rxLen-1) begin
               state <= STATE_CMD;
@@ -160,14 +137,14 @@ module uart_bootloader #(
   end
 
   // communication flow control
-  assign uart_rx_ready = (state == STATE_TX)?spi_tx_ready:1;
-  assign uart_tx_valid = (state == STATE_RX)?spi_rx_valid:0;
+  assign data_in_ready = (state == STATE_TX)?spi_tx_ready:1;
+  assign data_out_valid = (state == STATE_RX)?spi_rx_valid:0;
 
-  assign spi_rx_ready = (state == STATE_RX)?uart_tx_ready:1;
-  assign spi_tx_valid = (state == STATE_TX)?uart_rx_valid:(state == STATE_RX)?1:0;
+  assign spi_rx_ready = (state == STATE_RX)?data_out_ready:1;
+  assign spi_tx_valid = (state == STATE_TX)?data_in_valid:(state == STATE_RX)?1:0;
 
-  assign spi_tx_data = uart_rx_data;
-  assign uart_tx_data = spi_rx_data;
+  assign spi_tx_data = data_in;
+  assign data_out = spi_rx_data;
 
   // status
   assign led = state != STATE_CMD;

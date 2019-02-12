@@ -1,0 +1,63 @@
+[*]
+[*] GTKWave Analyzer v3.3.66 (w)1999-2015 BSI
+[*] Tue Feb 12 12:54:44 2019
+[*]
+[dumpfile] "/home/arnaud/dev/fpga/bootloader/i2c_tb.vcd"
+[dumpfile_mtime] "Tue Feb 12 12:53:40 2019"
+[dumpfile_size] 49875
+[savefile] "/home/arnaud/dev/fpga/bootloader/i2c.gtkw"
+[timestart] 0
+[size] 1871 1056
+[pos] -1 -1
+*-11.748613 15310 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[treeopen] testbench.
+[sst_width] 258
+[signals_width] 180
+[sst_expanded] 1
+[sst_vpaned_height] 608
+@28
+testbench.clk
+testbench.sda_i
+testbench.sda_o
+testbench.sda
+testbench.scl
+@200
+-I2C state
+@c00028
+testbench.uut.state[2:0]
+@28
+(0)testbench.uut.state[2:0]
+(1)testbench.uut.state[2:0]
+(2)testbench.uut.state[2:0]
+@1401200
+-group_end
+@22
+testbench.uut.bitCounter[3:0]
+@28
+testbench.uut.rw
+@200
+-Flags
+@28
+testbench.uut.start
+testbench.uut.read
+testbench.uut.write
+@29
+testbench.uut.stop
+@200
+-Write pipe
+@28
+testbench.uut.write_ready
+@22
+testbench.uut.write_data[7:0]
+@28
+testbench.uut.write_valid
+@200
+-Read pipe
+@28
+testbench.uut.read_ready
+@22
+testbench.uut.read_data[7:0]
+@28
+testbench.uut.read_valid
+[pattern_trace] 1
+[pattern_trace] 0

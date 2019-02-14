@@ -9,13 +9,17 @@ module testbench;
 
   reg RX = 1;
 
+  wire sda;
+  assign (pull1,highz0)sda = 1;
+
   top #(
     .CLK_FREQ(12000000),
     .UART_BAUDRATE(115200)  
   ) uut(
     .clk(clk),
     .uart0_rx(RX),
-    .spi_si(1'b0)
+    .spi_si(1'b0),
+    .i2c_sda(sda)
   );
 
   task send_byte;
@@ -44,6 +48,14 @@ module testbench;
     end
 
     repeat (10 * PERIOD) @(posedge clk);
+
+    // Initialize/enable the UART
+    // Break
+    RX = 0;
+    repeat (19 * PERIOD) @(posedge clk);
+    RX = 1;
+    repeat (PERIOD) @(posedge clk);
+    send_byte(8'hbc);
 
     // Transfers of 1 tx and 5 rx
     send_byte(8'h01);

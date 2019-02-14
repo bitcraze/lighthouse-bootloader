@@ -1,21 +1,21 @@
 [*]
 [*] GTKWave Analyzer v3.3.93 (w)1999-2018 BSI
-[*] Sun Dec 16 19:20:16 2018
+[*] Thu Feb 14 21:25:15 2019
 [*]
-[dumpfile] "/home/arnaud/dev/fpga/bootloader/bootloader_tb.vcd"
-[dumpfile_mtime] "Sun Dec 16 19:19:49 2018"
-[dumpfile_size] 39280498
-[savefile] "/home/arnaud/dev/fpga/bootloader/bootloader.gtkw"
+[dumpfile] "/home/arnaud/fpga/bootloader/bootloader_tb.vcd"
+[dumpfile_mtime] "Thu Feb 14 21:22:06 2019"
+[dumpfile_size] 3493821
+[savefile] "/home/arnaud/fpga/bootloader/bootloader.gtkw"
 [timestart] 0
 [size] 1629 986
 [pos] -1 -1
-*-20.608797 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+*-17.428194 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] testbench.
 [treeopen] testbench.uut.
 [sst_width] 258
 [signals_width] 281
 [sst_expanded] 1
-[sst_vpaned_height] 586
+[sst_vpaned_height] 349
 @28
 testbench.clk
 testbench.RX
@@ -25,8 +25,23 @@ testbench.uut.spi_so
 testbench.uut.spi_ss
 @200
 -Protocol
--
 @28
 testbench.uut.boot
+@200
+-Interface status
+@28
+testbench.uut.uart0_enabled
+testbench.uut.uart1_enabled
+testbench.uut.uart0_reset_bootloader
+testbench.uut.uart1_reset_bootloader
+testbench.uut.i2c_bootloader_reset
+@200
+-Uart0
+@22
+testbench.uut.uart0_rx_data[7:0]
+@28
+testbench.uut.uart0_rx_ready
+testbench.uut.uart0_rx_valid
+testbench.uut.uart0_rx_break
 [pattern_trace] 1
 [pattern_trace] 0

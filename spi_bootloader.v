@@ -23,6 +23,7 @@ module spi_bootloader #(
   output reg spi_ss,
   output led,
 
+  output busy,
   output boot
 );
 
@@ -64,6 +65,8 @@ module spi_bootloader #(
   localparam STATE_RX = 7;  // Receiving from SPI
 
   reg [3:0] state = STATE_CMD;
+
+  assign busy = state != STATE_CMD;  // Busy when not waiting for a commmand
 
   reg [15:0] rxLen = 0;
   reg [15:0] txLen = 0;

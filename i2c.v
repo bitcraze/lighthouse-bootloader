@@ -19,7 +19,7 @@ module i2c #(
     output reg read_ready,
 
     output reg write_valid,
-    input [7:0] write_data,
+    output [7:0] write_data,
     input write_ready
 );
 

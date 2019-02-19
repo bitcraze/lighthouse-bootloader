@@ -154,6 +154,32 @@ module testbench;
 
     repeat (10 * PERIOD) @(posedge clk);
 
+    // i2c  test (read flash ID)
+    i2c_start();
+    i2c_write({I2C_ADDRESS, I2C_WRITE});
+    
+    i2c_write(8'h01);
+    i2c_write(8'h02);
+    i2c_write(8'h00);
+    i2c_write(8'h05);
+    i2c_write(8'h00);
+    i2c_write(8'h9F);
+    i2c_write(8'h00);
+    i2c_stop();
+
+    i2c_start();
+    i2c_write({I2C_ADDRESS, I2C_READ});
+
+    i2c_read();
+    i2c_read();
+    i2c_read();
+    i2c_read();
+    i2c_read();
+    i2c_stop();
+
+
+    repeat (10 * PERIOD) @(posedge clk);
+
     // Initialize/enable the UART
     // Break
     RX = 0;

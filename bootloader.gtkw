@@ -1,21 +1,21 @@
 [*]
-[*] GTKWave Analyzer v3.3.93 (w)1999-2018 BSI
-[*] Sun Feb 17 17:51:14 2019
+[*] GTKWave Analyzer v3.3.66 (w)1999-2015 BSI
+[*] Tue Feb 19 10:29:22 2019
 [*]
 [dumpfile] "/home/arnaud/dev/fpga/bootloader/bootloader_tb.vcd"
-[dumpfile_mtime] "Sun Feb 17 17:47:17 2019"
-[dumpfile_size] 4791239
+[dumpfile_mtime] "Tue Feb 19 10:27:04 2019"
+[dumpfile_size] 6485531
 [savefile] "/home/arnaud/dev/fpga/bootloader/bootloader.gtkw"
-[timestart] 0
-[size] 1629 986
+[timestart] 300900
+[size] 2511 1416
 [pos] -1 -1
-*-18.544292 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+*-17.391472 822700 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] testbench.
 [treeopen] testbench.uut.
 [sst_width] 258
 [signals_width] 281
 [sst_expanded] 1
-[sst_vpaned_height] 586
+[sst_vpaned_height] 826
 @28
 testbench.clk
 testbench.RX
@@ -54,5 +54,11 @@ testbench.uut.i2c.read
 testbench.uut.i2c.write
 testbench.uut.i2c.stop
 testbench.uut.i2c.state[2:0]
+@24
+testbench.uut.i2c_fsm.read_ptr[14:0]
+@28
+testbench.uut.i2c_fsm.i2c_read_ready
+testbench.uut.i2c_fsm.i2c_read_valid
+testbench.uut.i2c_fsm.buffer_read_valid
 [pattern_trace] 1
 [pattern_trace] 0

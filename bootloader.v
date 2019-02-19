@@ -151,9 +151,11 @@ module top(
   
 
   // I2C port
-  wire i2c_sda_i;
+  wire i2c_sda_i0;
+  reg i2c_sda_i1;
   wire i2c_sda_o;
-  wire i2c_scl;
+  reg i2c_scl0;
+  reg i2c_scl1;
 
   wire i2c_write;
   wire i2c_write_ready;
@@ -167,8 +169,8 @@ module top(
   i2c i2c (
     .clk(clk),
 
-    .scl(i2c_scl),
-    .sda_i(i2c_sda_i),
+    .scl(i2c_scl1),
+    .sda_i(i2c_sda_i1),
     .sda_o(i2c_sda_o),
 
     .read(i2c_read),
@@ -190,10 +192,16 @@ module top(
     .PACKAGE_PIN(i2c_sda),
     .INPUT_CLK(clk),
     .CLOCK_ENABLE(1'b1),
-    .D_IN_0(i2c_sda_i),
+    .D_IN_0(i2c_sda_i0),
     .D_OUT_0(1'b0),              // Fix output to 0
     .OUTPUT_ENABLE(~i2c_sda_o)   // Enabled to outputing 0 when sda_o should be 0
   );
+
+  always @(posedge clk) begin
+    i2c_sda_i1 <= i2c_sda_i0;
+    i2c_scl0 <= i2c_scl;
+    i2c_scl1 <= i2c_scl0;  
+  end
 
   // I2C <-> Bootloader FSM
   wire i2c_out_ready;

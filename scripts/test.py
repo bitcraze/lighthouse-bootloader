@@ -8,6 +8,7 @@ fpga = Serial("/dev/ttyUSB1", 115200)
 print ("Reseting bootloader ...")
 fpga.flushOutput()
 fpga.send_break()
+fpga.write(b"\xbc")
 fpga.flushInput()
 
 # Todo: Fix bug that prevents from sending command without answer

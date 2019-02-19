@@ -26,12 +26,12 @@ module i2c_fsm (
     input i2c_write
 );
 
-localparam DEPTH = 128;
+localparam DEPTH = 30*512;
 
 // Read buffer, cache data from the boorloader
 reg [7:0] buffer[0:DEPTH-1];
-reg [6:0] read_ptr = 0;
-reg [6:0] write_ptr = 0;
+reg [$clog2(DEPTH+1):0] read_ptr = 0;
+reg [$clog2(DEPTH+1):0] write_ptr = 0;
 
 reg i2c_status_read = 0;
 
@@ -47,8 +47,10 @@ assign i2c_write_ready = bootloader_in_ready;
 assign bootloader_out_ready = 1;
 
 // Data to the I2C: first the status byte then the buffer
-assign i2c_read_data = (i2c_status_read==0)?{bootloader_busy, write_ptr}:buffer[read_ptr];
-assign i2c_read_valid = 1'b1;
+reg buffer_read_valid;
+reg [7:0] buffer_read_data;
+assign i2c_read_data = (i2c_status_read==0)?{bootloader_busy, 7'h0}:buffer_read_data;
+assign i2c_read_valid = (i2c_status_read==0)?1:buffer_read_valid;
 
 always @(posedge clk) begin
     // I2C should read buffer from the begining
@@ -66,10 +68,16 @@ always @(posedge clk) begin
     end
 
     // Reading from I2C
-    if (i2c_read_valid && i2c_read_ready) begin
-      if (!i2c_status_read) i2c_status_read <= 1;
-      else read_ptr <= read_ptr + 1;
+    buffer_read_valid <= 0;
+    if (i2c_read_ready) begin
+      if (!i2c_status_read) begin
+        i2c_status_read <= 1;
+      end else begin
+        buffer_read_valid <= 1;
+        if (buffer_read_valid) read_ptr <= read_ptr + 1;
+      end
     end
+    buffer_read_data <= buffer[read_ptr];
 end
 
 endmodule

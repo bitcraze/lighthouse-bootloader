@@ -116,6 +116,7 @@ module testbench;
     end
   endtask
 
+  integer i;
 
   reg [4095:0] vcdfile;
 
@@ -136,7 +137,7 @@ module testbench;
     i2c_write(8'h02);
     i2c_write(8'h00);
     i2c_write(8'h05);
-    i2c_write(8'h00);
+    i2c_write(8'h02);
     i2c_write(8'h9F);
     i2c_write(8'h00);
     i2c_stop();
@@ -144,12 +145,16 @@ module testbench;
     i2c_start();
     i2c_write({I2C_ADDRESS, I2C_READ});
 
-    i2c_read();
-    i2c_read();
-    i2c_read();
-    i2c_read();
-    i2c_read();
-    i2c_stop();
+    for (i=0; i < 'h205; i = i + 1) begin
+          i2c_read();
+    end
+
+    // i2c_read();
+    // i2c_read();
+    // i2c_read();
+    // i2c_read();
+    // i2c_read();
+    // i2c_stop();
 
 
     repeat (10 * PERIOD) @(posedge clk);

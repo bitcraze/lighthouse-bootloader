@@ -79,7 +79,7 @@ module i2c #(
           if (bitCounter != 7 && sda_i != slave_address[6-bitCounter]) state <= IDLE;
           else if (bitCounter == 7) begin
             rw <= sda_i;
-            if (rw) read <= 1;
+            if (sda_i) read <= 1;
             else write <= 1;
           end else if (bitCounter == 8) begin
             if (rw) begin

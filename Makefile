@@ -11,7 +11,7 @@ all: bootloader_multi.bin bootloader.bin bootloader.rpt bootloader.asc
 	arachne-pnr -d $(subst up,,$(subst hx,,$(subst lp,,$(DEVICE)))) -o $@ -p $(PIN_DEF) $^
 
 %.bin: %.asc
-	icepack $< $@
+	icepack -s $< $@
 
 %_multi.bin: %.bin
 	cp $^ $^.0

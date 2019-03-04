@@ -95,6 +95,7 @@ module testbench;
   endtask
 
   task i2c_read;
+    input ack;
     integer i;
     begin
       for (i = 0; i < 8; i = i + 1) begin
@@ -106,7 +107,7 @@ module testbench;
         scl = 0;
         repeat (PERIOD) @(posedge clk);
       end
-      sda_drive = 0;
+      sda_drive = ack;
       repeat (PERIOD) @(posedge clk);
       scl = 1;
       repeat (PERIOD) @(posedge clk);
@@ -134,28 +135,23 @@ module testbench;
     i2c_write({I2C_ADDRESS, I2C_WRITE});
     
     i2c_write(8'h01);
-    i2c_write(8'h02);
+    i2c_write(8'h01);
     i2c_write(8'h00);
-    i2c_write(8'h05);
-    i2c_write(8'h02);
+    i2c_write(8'h20);
+    i2c_write(8'h00);
     i2c_write(8'h9F);
-    i2c_write(8'h00);
+
     i2c_stop();
 
     i2c_start();
     i2c_write({I2C_ADDRESS, I2C_READ});
 
-    for (i=0; i < 'h205; i = i + 1) begin
-          i2c_read();
+    for (i=0; i <= 'h10; i = i + 1) begin
+          i2c_read(0);
     end
+    i2c_read(1);
 
-    // i2c_read();
-    // i2c_read();
-    // i2c_read();
-    // i2c_read();
-    // i2c_read();
-    // i2c_stop();
-
+    i2c_stop();
 
     repeat (10 * PERIOD) @(posedge clk);
 
@@ -175,12 +171,26 @@ module testbench;
     i2c_start();
     i2c_write({I2C_ADDRESS, I2C_READ});
 
-    i2c_read();
-    i2c_read();
-    i2c_read();
-    i2c_read();
-    i2c_read();
+    i2c_read(0);
+    i2c_read(0);
+    i2c_read(0);
+    i2c_read(0);
+    i2c_read(1);
     i2c_stop();
+
+    // Reading bootloader version
+    i2c_start();
+    i2c_write({I2C_ADDRESS, I2C_WRITE});
+
+    i2c_write(8'h02);
+    i2c_stop();
+
+    i2c_start();
+    i2c_write({I2C_ADDRESS, I2C_READ});
+
+    i2c_read(1);
+    i2c_stop();
+
 
 
     repeat (10 * PERIOD) @(posedge clk);

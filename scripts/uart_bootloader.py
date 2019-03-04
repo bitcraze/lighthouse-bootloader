@@ -8,6 +8,7 @@ OFFSET = 0x020000
 def protocol_reset():
     fpga.flushOutput()
     fpga.send_break()
+    fpga.write(b"\xbc")
     fpga.flushInput()
 
 def boot():

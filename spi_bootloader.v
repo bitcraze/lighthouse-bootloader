@@ -63,6 +63,9 @@ module spi_bootloader #(
   localparam STATE_RXLENHIGH = 5;
   localparam STATE_TX = 6;  // Sending on SPI
   localparam STATE_RX = 7;  // Receiving from SPI
+  localparam STATE_VERSION = 8;
+
+  localparam VERSION = 8'h01;
 
   reg [3:0] state = STATE_CMD;
 
@@ -84,6 +87,7 @@ module spi_bootloader #(
             case (data_in)
               0: state <= STATE_BOOT;
               1: state <= STATE_TXLENLOW;
+              2: state <= STATE_VERSION;
             endcase 
           end
         end
@@ -135,19 +139,24 @@ module spi_bootloader #(
             end
           end
         end
+        STATE_VERSION: begin
+          if (data_out_ready && data_out_valid) begin
+            state <= STATE_CMD;
+          end
+        end
       endcase
     end
   end
 
   // communication flow control
   assign data_in_ready = (state == STATE_TX)?spi_tx_ready:1;
-  assign data_out_valid = (state == STATE_RX)?spi_rx_valid:0;
+  assign data_out_valid = (state == STATE_RX)?spi_rx_valid:(state == STATE_VERSION)?1:0;
 
   assign spi_rx_ready = (state == STATE_RX)?data_out_ready:1;
   assign spi_tx_valid = (state == STATE_TX)?data_in_valid:(state == STATE_RX)?1:0;
 
   assign spi_tx_data = data_in;
-  assign data_out = spi_rx_data;
+  assign data_out = (state == STATE_VERSION)?VERSION:spi_rx_data;
 
   // status
   assign led = state != STATE_CMD;

@@ -5,16 +5,19 @@ import struct
 
 OFFSET = 0x020000
 
+
 def protocol_reset():
     fpga.flushOutput()
     fpga.send_break()
     fpga.write(b"\xbc")
     fpga.flushInput()
 
+
 def boot():
     fpga.write(b"\0")
 
-def spi_xfer(command, answer_size = 0):
+
+def spi_xfer(command, answer_size=0):
     if type(command) is int:
         command = bytes([command])
     if type(command) is list:
@@ -24,6 +27,7 @@ def spi_xfer(command, answer_size = 0):
     cmd += command
     fpga.write(cmd)
     return fpga.read(answer_size)
+
 
 def flash_read(address, length):
     data = b""
@@ -39,10 +43,11 @@ def flash_read(address, length):
         else:
             length_to_read = length
             length = 0
-        
+
         data += spi_xfer(command, length_to_read)
-    
+
     return data
+
 
 def flash_erase_sector(address):
     # Write enable
@@ -51,6 +56,7 @@ def flash_erase_sector(address):
     address_bin = struct.pack(">L", address)[-3:]
     command = b"\xD8" + address_bin
     return spi_xfer(command)
+
 
 def flash_program_page(address, data):
     assert(len(data) <= 256)
@@ -61,23 +67,27 @@ def flash_program_page(address, data):
     command = b"\x02" + address_bin + data
     return spi_xfer(command)
 
+
 def flash_read_status():
     return spi_xfer(0x05, 1)[0]
+
 
 def flash_wait_program_complete():
     while flash_read_status() & 0x01 != 0:
         pass
 
+
 if __name__ == "__main__":
     if len(sys.argv) < 4:
-        print("Usage: {} <serial_port> <baudrate> <bitstream.bin>".format(sys.argv[0]))
+        print("Usage: {} <serial_port> <baudrate> <bitstream.bin>".format(
+            sys.argv[0]))
         sys.exit(1)
-    
-    fpga = serial.Serial(sys.argv[1], int(sys.argv[2]))
+
+    fpga = serial.Serial(sys.argv[1], int(sys.argv[2]), stopbits=1)
 
     with open(sys.argv[3], 'rb') as f:
         bitstream = f.read()
-    
+
     protocol_reset()
 
     # Waking up memory
@@ -105,7 +115,7 @@ if __name__ == "__main__":
             print("Erasing 64K at 0x{:08X}".format(OFFSET+(page*64*1024)))
             flash_erase_sector(OFFSET+(page*64*1024))
             flash_wait_program_complete()
-        
+
         print("Programming ...")
         toprogram = bitstream
         currentPage = 0
@@ -125,5 +135,3 @@ if __name__ == "__main__":
 
         print("Booting!")
         boot()
-
-        

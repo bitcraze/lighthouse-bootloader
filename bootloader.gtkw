@@ -1,15 +1,15 @@
 [*]
-[*] GTKWave Analyzer v3.3.66 (w)1999-2015 BSI
-[*] Mon Mar  4 16:02:42 2019
+[*] GTKWave Analyzer v3.3.86 (w)1999-2017 BSI
+[*] Wed Mar 13 15:13:57 2019
 [*]
 [dumpfile] "/home/arnaud/dev/fpga/bootloader/bootloader_tb.vcd"
-[dumpfile_mtime] "Mon Mar  4 16:00:27 2019"
-[dumpfile_size] 8379961
+[dumpfile_mtime] "Wed Mar 13 15:12:02 2019"
+[dumpfile_size] 8283807
 [savefile] "/home/arnaud/dev/fpga/bootloader/bootloader.gtkw"
 [timestart] 0
-[size] 2511 1416
+[size] 2509 1385
 [pos] -1 -1
-*-19.391821 1991000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+*-18.391821 364000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] testbench.
 [treeopen] testbench.uut.
 [sst_width] 258
@@ -60,7 +60,7 @@ testbench.uut.i2c_fsm.read_ptr[14:0]
 testbench.uut.i2c_fsm.i2c_read_ready
 testbench.uut.i2c_fsm.i2c_read_valid
 testbench.uut.i2c_fsm.buffer_read_valid
-@23
+@22
 testbench.uut.i2c.read_data[7:0]
 @200
 -Bootloader status

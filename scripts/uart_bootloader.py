@@ -29,6 +29,11 @@ def spi_xfer(command, answer_size=0):
     return fpga.read(answer_size)
 
 
+def get_version():
+    fpga.write(b"\x02")
+    return fpga.read(1)[0]
+
+
 def flash_read(address, length):
     data = b""
 
@@ -78,17 +83,24 @@ def flash_wait_program_complete():
 
 
 if __name__ == "__main__":
-    if len(sys.argv) < 4:
-        print("Usage: {} <serial_port> <baudrate> <bitstream.bin>".format(
+    if len(sys.argv) < 3:
+        print("Usage: {} <serial_port> <bitstream.bin>".format(
             sys.argv[0]))
         sys.exit(1)
 
-    fpga = serial.Serial(sys.argv[1], int(sys.argv[2]), stopbits=1)
+    fpga = serial.Serial(sys.argv[1], 115200, stopbits=1)
 
-    with open(sys.argv[3], 'rb') as f:
+    with open(sys.argv[2], 'rb') as f:
         bitstream = f.read()
 
     protocol_reset()
+
+    version = get_version()
+    print("Bootloader version {}".format(version))
+    if version < 2:
+        print("Switching to 113200 Baud")
+        fpga.close()
+        fpga = serial.Serial(sys.argv[1], 113200, stopbits=1)
 
     # Waking up memory
     spi_xfer(0xAB)

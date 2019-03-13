@@ -65,7 +65,7 @@ module spi_bootloader #(
   localparam STATE_RX = 7;  // Receiving from SPI
   localparam STATE_VERSION = 8;
 
-  localparam VERSION = 8'h01;
+  localparam VERSION = 8'h02;
 
   reg [3:0] state = STATE_CMD;
 

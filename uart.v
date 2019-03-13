@@ -39,11 +39,11 @@ module uart #(
       if (rx == 0) begin
         // Synchronize on start
         rx_state <= RX_START;
-        rx_counter <= BAUDSEL;
+        rx_counter <= BAUDSEL+1;
         rx_buffer <= 0;
       end
     end else begin
-      if (rx_counter == BAUDSEL*2) begin
+      if (rx_counter == (BAUDSEL*2)-1) begin
         rx_counter <= 0;
 
         // time to read a bit
@@ -117,7 +117,7 @@ module uart #(
         tx_bitcount <= 0;
         tx_buffer <= tx_data;
       end
-    end else if (tx_counter == 2*BAUDSEL) begin
+    end else if (tx_counter == (2*BAUDSEL)-1) begin
       tx_counter <= 0;
       if (tx_state == TX_START) tx_state <= TX_DATA;
       else if (tx_state == TX_DATA) begin

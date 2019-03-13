@@ -52,12 +52,20 @@ module top(
   reg uart0_enabled = 0;
   reg uart0_reset_bootloader = 0;
 
+  reg uart0_rx0;
+  reg uart0_rx1;
+
+  always @(posedge clk) begin
+    uart0_rx0 <= uart0_rx;
+    uart0_rx1 <= uart0_rx0;
+  end
+
   uart #(
     .BAUDSEL(CLK_FREQ / (2*UART_BAUDRATE))
   ) uart0 (
     .clk(clk),
 
-    .rx(uart0_rx),
+    .rx(uart0_rx1),
     .tx(uart0_tx_out0),
 
     .rx_valid(uart0_rx_valid),
@@ -103,17 +111,23 @@ module top(
 
   wire uart1_rx_break;
 
-  wire uart1_rx_in0;
-
   reg uart1_enabled = 0;
   reg uart1_reset_bootloader = 0;
+
+  reg uart1_rx0;
+  reg uart1_rx1;
+
+  always @(posedge clk) begin
+    uart1_rx0 <= uart1_rx;
+    uart1_rx1 <= uart1_rx0;
+  end
 
   uart #(
     .BAUDSEL(CLK_FREQ / (2*UART_BAUDRATE))
   ) uart1 (
     .clk(clk),
 
-    .rx(uart1_rx_in0),
+    .rx(uart1_rx1),
     .tx(uart1_tx),
 
     .rx_valid(uart1_rx_valid),
@@ -133,22 +147,11 @@ module top(
       if (uart1_rx_valid && uart1_rx_data == MAGIC_BYTE) begin
         uart1_enabled <= 1;
         uart1_reset_bootloader <= 1;
-      end else begin
-        if (uart1_rx_break) uart1_reset_bootloader <= 1;
       end
+    end else begin
+      if (uart1_rx_break) uart1_reset_bootloader <= 1;
     end
   end
-
-  // Enable Pull-up on RX pin
-  SB_IO #(
-      .PIN_TYPE(6'b0000_01),
-      .PULLUP(1'b1)
-  ) uart1_io (
-      .PACKAGE_PIN(uart1_rx),
-      .D_IN_0(uart1_rx_in0)
-  );
-
-  
 
   // I2C port
   wire i2c_sda_i0;

@@ -8,7 +8,7 @@ all: bootloader_multi.bin bootloader.bin bootloader.rpt bootloader.asc
 	yosys -p 'synth_ice40 -top top -blif $@' $<
 
 %.asc: %.blif
-	arachne-pnr -d $(subst up,,$(subst hx,,$(subst lp,,$(DEVICE)))) -o $@ -p $(PIN_DEF) $^
+	arachne-pnr -s 2 -d $(subst up,,$(subst hx,,$(subst lp,,$(DEVICE)))) -o $@ -p $(PIN_DEF) $^
 
 %.bin: %.asc
 	icepack -s $< $@

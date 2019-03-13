@@ -1,5 +1,5 @@
 module testbench();
-  localparam integer PERIOD = 12000000 / 9600;
+  localparam integer PERIOD = 4; // 12000000 / 9600;
 
   // reg clk = 0;
   // initial #10 forever #5 clk = ~clk;

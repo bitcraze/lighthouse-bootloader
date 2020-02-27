@@ -1,0 +1,4 @@
+- page_id: home
+- title: Bootloader protocol
+  subs:
+    - {page_id: bootloader_protocol}

@@ -7,3 +7,4 @@
 .vscode/
 *.vcd
 *_tb
+docs/.jekyll*

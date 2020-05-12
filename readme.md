@@ -2,7 +2,7 @@
 
 Bootloader for the [lighthouse deck](https://www.bitcraze.io/lighthouse-positioning-deck/).
 Give access to the SPI flash from the deck two Serial port and I2C port.
-The protocol is documented in the [Bitcraze wiki](https://wiki.bitcraze.io/doc:lighthouse:bootloader).
+The protocol is documented in the [Bitcraze documentation](https://www.bitcraze.io/documentation/repository/lighthouse-bootloader/master/).
 
 
 ## Building and programming

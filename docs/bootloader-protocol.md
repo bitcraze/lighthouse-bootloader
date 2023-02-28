@@ -3,8 +3,6 @@ title: Bootloader protocol
 page_id: bootloader_protocol
 ---
 
-# Lighthouse deck bootloader
-
 The [lighthouse deck](https://store.bitcraze.io/products/lighthouse-positioning-deck) is based on an [iCE40UP5K](https://www.latticesemi.com/Products/FPGAandCPLD/iCE40UltraPlus) FPGA. The FPGA boots from an SPI flash to the bootloader, it is then able to boot to another configuration image. The bootloader gives access to the SPI memory and to a boot command to boot the user image. This allows the deck to be updated easily from the Crazyflie or from the auxiliary serial port.
 
 The bootloader protocol is inspired by the [TinyFpga USB bootloader](https://github.com/tinyfpga/TinyFPGA-Bootloader) but implemented on serial port and I2C bus. It gives a raw access to the SPI bus, this means that memory operation should be done using SPI commands following the [SPI memory documentation](https://www.winbond.com/resource-files/w25q80dv_revf_02112015.pdf).
